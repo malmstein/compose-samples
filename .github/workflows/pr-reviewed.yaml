@@ -1,4 +1,4 @@
-name: Create a task
+name: Pull Request Reviewed
 
 on:
   pull_request_review:
