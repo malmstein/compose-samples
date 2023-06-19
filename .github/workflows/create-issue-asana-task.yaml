@@ -1,4 +1,4 @@
-name: Create a task
+name: Create Asana task from Github Issue
 
 on:
   issues:
