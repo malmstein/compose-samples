@@ -15,7 +15,7 @@ jobs:
         with:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           trigger-phrase: "Task/Issue URL:"
-          action: 'pr-created'
+          action: 'pr-opened'
   add-closed-comment:
     runs-on: ubuntu-latest
     needs: pr-opened
