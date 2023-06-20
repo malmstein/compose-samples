@@ -6,11 +6,12 @@ on:
 
 jobs:
   pr-opened:
+    runs-on: ubuntu-latest
     outputs:
       output1: ${{ steps.step1.outputs.closed }}
-    runs-on: ubuntu-latest
     steps:
       - name: Add Comment to Asana task
+        id: step1
         uses: malmstein/github-asana-action@master
         with:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
@@ -23,9 +24,12 @@ jobs:
       issues: write
     steps:
       - name: Check if Pull Request was closed
-        if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
+        env:
+          OUTPUT1: ${{needs.pr-opened.outputs.output1}}
+        run: echo "$OUTPUT1"
 
       - name: Checkout
+        if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
         uses: actions/checkout@v2
 
       - name: Render template
