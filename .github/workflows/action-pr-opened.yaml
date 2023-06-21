@@ -16,6 +16,7 @@ jobs:
         uses: malmstein/github-asana-action@master
         with:
           github-pat: ${{ secrets.GT_DAXMOBILE }}
+          asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           action: 'pr-opened'
   add-asana-comment:
     name: Add Comment to Asana Task
