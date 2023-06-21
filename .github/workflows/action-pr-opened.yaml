@@ -56,6 +56,15 @@ jobs:
             1192160553314033
           trigger-phrase: "Task/Issue URL:"
           action: 'add-asana-project'
+  create-asana-task:
+    name: Create Asana task
+    runs-on: ubuntu-latest
+    if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
+    uses: malmstein/github-asana-action@master
+    with:
+      asana-pat: ${{ secrets.GH_ASANA_SECRET }}
+      asana-project: ${{ secrets.GH_ASANA_ISSUES_PROJECT_ID }}
+      action: 'create-asana-pr-task'
   add-closed-comment:
     name: Add Comment in Closed Pull Request
     if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
