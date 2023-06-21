@@ -6,7 +6,7 @@ on:
 
 jobs:
   pr-opened:
-    name: Pull Request Opened
+    name: Check if Pull Request is valid
     runs-on: ubuntu-latest
     outputs:
       output1: ${{ steps.step1.outputs.closed }}
@@ -46,6 +46,7 @@ jobs:
       issues: write
     steps:
       - name: Checking if Pull Request was closed
+        if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
         env:
           OUTPUT1: ${{needs.pr-opened.outputs.output1}}
         run: echo "$OUTPUT1"
@@ -55,12 +56,14 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Render response template
+        if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
           template: .github/pr-reply-template.md
 
       - name: Add comment to Pull Request
+        if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
         uses: peter-evans/create-or-update-comment@v3.0.2
         with:
           issue-number: ${{ github.event.pull_request.number }}
