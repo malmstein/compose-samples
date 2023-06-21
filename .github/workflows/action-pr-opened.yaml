@@ -63,7 +63,7 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Checking if Pull Request was closed
+      - name: Checking if Pull Request is valid
         env:
           OUTPUT1: ${{needs.pr-opened.outputs.output1}}
         run: echo "$OUTPUT1"
