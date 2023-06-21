@@ -18,6 +18,24 @@ jobs:
           github-pat: ${{ secrets.GT_DAXMOBILE }}
           trigger-phrase: "Task/Issue URL:"
           action: 'pr-opened'
+  add-asana-comment:
+    runs-on: ubuntu-latest
+    needs: pr-opened
+    permissions:
+      issues: write
+    steps:
+      - name: Checking if Pull Request was closed
+        env:
+          OUTPUT1: ${{needs.pr-opened.outputs.output1}}
+        run: echo "$OUTPUT1"
+
+      - name: Add comment in Asana task
+        if: ${{ needs.pr-opened.outputs.output1 == 'false' }}
+        uses: malmstein/github-asana-action@master
+        with:
+          asana-pat: ${{ secrets.GH_ASANA_SECRET }}
+          trigger-phrase: "Task/Issue URL:"
+          action: 'add-asana-comment'
   add-closed-comment:
     runs-on: ubuntu-latest
     needs: pr-opened
@@ -29,17 +47,17 @@ jobs:
           OUTPUT1: ${{needs.pr-opened.outputs.output1}}
         run: echo "$OUTPUT1"
 
-      - name: Checkout
+      - name: Read files
         if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
         uses: actions/checkout@v2
 
-      - name: Render template
+      - name: Render response template
         id: render_template
         uses: chuhlomin/render-template@v1.7
         with:
           template: .github/pr-reply-template.md
 
-      - name: Add comment
+      - name: Add comment to Pull Request
         uses: peter-evans/create-or-update-comment@v3.0.2
         with:
           issue-number: ${{ github.event.pull_request.number }}
