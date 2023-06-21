@@ -59,6 +59,7 @@ jobs:
   create-asana-task:
     name: Create Asana task
     runs-on: ubuntu-latest
+    needs: pr-opened
     if: ${{ needs.pr-opened.outputs.output1 == 'true' }}
     uses: malmstein/github-asana-action@master
     with:
