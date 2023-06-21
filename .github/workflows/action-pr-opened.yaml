@@ -10,11 +10,12 @@ jobs:
     outputs:
       output1: ${{ steps.step1.outputs.closed }}
     steps:
-      - name: Add Comment to Asana task
+      - name: Validating Pull Request
         id: step1
         uses: malmstein/github-asana-action@master
         with:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
+          github-pat: ${{ secrets.GT_DAXMOBILE }}
           trigger-phrase: "Task/Issue URL:"
           action: 'pr-opened'
   add-closed-comment:
