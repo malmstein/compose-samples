@@ -37,11 +37,6 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Output External PR
-        env:
-          OUTPUT1: ${{needs.validate-pr.outputs.output1}}
-        run: echo "$OUTPUT1"
-
       - name: Create Asana task in Internal Project
         uses: malmstein/github-asana-action@master
         with:
