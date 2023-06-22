@@ -39,6 +39,14 @@ jobs:
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           asana-project: '1174433894299346'
           action: 'add-task-asana-project'
+
+      - name: Add Asana task to Android Releases Board Project
+        uses: malmstein/github-asana-action@master
+        with:
+          asana-pat: ${{ secrets.GH_ASANA_SECRET }}
+          asana-project: '1174433894299346'
+          asana-section: '1194563123641588'
+          action: 'add-task-asana-project'
   process-external-pr:
     name: Process external Pull Request
     if: ${{ needs.validate-pr.outputs.output1 == 'true' }}
