@@ -1,4 +1,4 @@
-name: Create Asana task from Github Issue
+name: Asana Integration after Issue opened
 
 on:
   issues:

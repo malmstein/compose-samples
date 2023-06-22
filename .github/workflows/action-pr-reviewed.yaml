@@ -1,4 +1,4 @@
-name: Pull Request Reviewed
+name: Asana Integration after Pull Request reviewed
 
 on:
   pull_request_review:

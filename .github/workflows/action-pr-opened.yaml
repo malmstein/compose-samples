@@ -32,6 +32,13 @@ jobs:
           asana-project: ${{ secrets.GH_ASANA_ISSUES_PROJECT_ID }}
           trigger-phrase: "Task/Issue URL:"
           action: 'add-asana-comment'
+
+      - name: Add Asana task to Internal Project
+        uses: malmstein/github-asana-action@master
+        with:
+          asana-pat: ${{ secrets.GH_ASANA_SECRET }}
+          asana-project: 1174433894299346
+          action: 'add-task-asana-project'
   process-external-pr:
     name: Process external Pull Request
     if: ${{ needs.validate-pr.outputs.output1 == 'true' }}

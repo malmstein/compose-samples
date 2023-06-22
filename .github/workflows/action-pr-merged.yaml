@@ -1,4 +1,4 @@
-name: Mark task as complete on merge
+name: Asana Integration after Pull Request merged
 
 on:
   pull_request:
