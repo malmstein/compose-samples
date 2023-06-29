@@ -1,4 +1,4 @@
-name: Asana Integration after Repo has been updated
+name: Repo updated
 
 on:
   workflow_dispatch:
