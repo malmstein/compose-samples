@@ -18,7 +18,7 @@ jobs:
           github-org: 'malmstein'
           action: 'get-latest-repo-release'
 
-  create-pr:
+  process-update:
     name: Create Pull Request in Android repo
     runs-on: ubuntu-latest
     needs: find-latest-version
@@ -26,12 +26,12 @@ jobs:
       VERSION: ${{needs.find-latest-version.outputs.version}}
     steps:
       - name: Create Asana task when workflow succeeded
-        uses: honeycombio/gha-create-asana-task@main
+        id: create-task
+        uses: malmstein/github-asana-action@master
         with:
           asana-secret: ${{ secrets.GH_ASANA_SECRET }}
-          asana-workspace-id: '137249556945'
-          asana-project-id: '1174433894299346'
-          asana-section-id: '1202853880411179'
+          asana-project: '1174433894299346'
+          asana-section: '1202853880411179'
           asana-task-name: Update content scope scripts to version ${{ env.VERSION }}
           asana-task-description: |
             Content scope scripts have been updated and a PR created.
@@ -39,3 +39,14 @@ jobs:
             If tests failed check out https://app.asana.com/0/1202561462274611/1203986899650836/f for further information on what to do next.
             
             See ${{ steps.create-pr.outputs.pull-request-url }}
+
+      - name: Add Asana task to Android Releases Board Project
+        uses: malmstein/github-asana-action@master
+        with:
+          asana-pat: ${{ secrets.GH_ASANA_SECRET }}
+          asana-task-id: ${{ steps.create-task.outputs.taskId }}
+          asana-project: '1200163258163052'
+          asana-section: '1204804213442892'
+          action: 'add-task-asana-project'
+
+
