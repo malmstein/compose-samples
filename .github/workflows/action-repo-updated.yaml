@@ -34,6 +34,8 @@ jobs:
           asana-section: '1202853880411179'
           asana-task-name: Update content scope scripts to version ${{ env.VERSION }}
           asana-task-description: |
+            Task/Issue URL: https://app.asana.com/0/1174433894299346/${{ steps.create-task.outputs.taskId }}/f
+            
             Content scope scripts have been updated and a PR created.
             
             If tests failed check out https://app.asana.com/0/1202561462274611/1203986899650836/f for further information on what to do next.
@@ -50,4 +52,13 @@ jobs:
           asana-section: '1204804213442892'
           action: 'add-task-asana-project'
 
+      - name: Update PR description with Asana task
+        uses: malmstein/github-asana-action@master
+        with:
+          github-pat: ${{ secrets.GT_DAXMOBILE }}
+          github-pr: '4'
+          github-repository: 'github-asana-action'
+          github-org: 'malmstein'
+          asana-task-id: ${{ steps.create-task.outputs.taskId }}
+          action: 'add-task-pr-description'
 
