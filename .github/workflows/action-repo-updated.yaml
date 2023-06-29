@@ -57,7 +57,7 @@ jobs:
         with:
           github-pat: ${{ secrets.GT_DAXMOBILE }}
           github-pr: '4'
-          github-repository: 'github-asana-action'
+          github-repository: 'compose-samples'
           github-org: 'malmstein'
           asana-task-id: ${{ steps.create-task.outputs.taskId }}
           action: 'add-task-pr-description'
