@@ -32,7 +32,7 @@ jobs:
           asana-workspace-id: '137249556945'
           asana-project-id: '1174433894299346'
           asana-section-id: '1202853880411179'
-          asana-task-name: Update content scope scripts to version ${{ VERSION }}
+          asana-task-name: Update content scope scripts to version ${{ env.VERSION }}
           asana-task-description: |
             Content scope scripts have been updated and a PR created.
             
