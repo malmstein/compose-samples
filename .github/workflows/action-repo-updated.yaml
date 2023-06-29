@@ -29,7 +29,7 @@ jobs:
         id: create-task
         uses: malmstein/github-asana-action@master
         with:
-          asana-secret: ${{ secrets.GH_ASANA_SECRET }}
+          asana-pat: ${{ secrets.GH_ASANA_SECRET }}
           asana-project: '1174433894299346'
           asana-section: '1202853880411179'
           asana-task-name: Update content scope scripts to version ${{ env.VERSION }}
