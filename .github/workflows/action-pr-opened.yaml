@@ -5,18 +5,6 @@ on:
     types: [opened, reopened]
 
 jobs:
-  validate-pr:
-    name: Validate Pull Request
-    runs-on: ubuntu-latest
-    outputs:
-      output1: ${{ steps.step1.outputs.external }}
-    steps:
-      - name: Checking Pull Request sender membership
-        id: step1
-        uses: malmstein/github-asana-action@master
-        with:
-          github-pat: ${{ secrets.GT_DAXMOBILE }}
-          action: 'check-pr-membership'
   process-internal-pr:
     name: Process internal Pull Request
     if: ${{ github.event.pull_request.user.login != github.event.pull_request.base.repo.owner.login}}
