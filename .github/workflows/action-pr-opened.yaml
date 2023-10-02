@@ -5,6 +5,12 @@ on:
     types: [opened, reopened]
 
 jobs:
+  validate-pr:
+    name: Validate Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking Pull Request sender membership
+        run: echo "Checking author membership in the organization"
   process-internal-pr:
     name: Process internal Pull Request
     if: ${{ github.event.pull_request.user.login != github.event.pull_request.base.repo.owner.login}}
