@@ -1,0 +1,39 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+
+    desc "Tag and release a new app version"
+        lane :tag_and_release_version do |options|
+            ensure_git_status_clean
+            ensure_git_branch( branch: 'develop' )
+
+            options_release_number = options[:app_version]
+
+            update_app_version(newVersion: options_release_number)
+            do_create_and_push_tags(newVersion: options_release_number)
+
+        end
+
+            private_lane :update_app_version do |options|
+                newVersion = options[:newVersion]
+                sh "git flow release start #{newVersion}"
+
+                File.open('../app/version/version.properties', 'w') do |file|
+                    file.write("VERSION=#{newVersion}")
+                end
+            end
