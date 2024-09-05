@@ -22,7 +22,7 @@ platform :android do
             ensure_git_status_clean
             ensure_git_branch( branch: 'develop' )
 
-            options_release_number = options[:newVersion]
+            options_release_number = options[:release_number]
 
             update_app_version(newVersion: options_release_number)
             do_create_and_push_tags(newVersion: options_release_number)
@@ -31,9 +31,9 @@ platform :android do
 
             private_lane :update_app_version do |options|
                 newVersion = options[:newVersion]
-                sh "git flow release start #{newVersion}"
+                sh "git checkout -b release/#{newVersion} develop"
 
-                File.open('../app/version/version.properties', 'w') do |file|
+                File.open('../version/version.properties', 'w') do |file|
                     file.write("VERSION=#{newVersion}")
                 end
             end
@@ -47,7 +47,13 @@ platform :android do
                     skip_git_hooks: true
                 )
 
-                sh "git flow release finish -mnFS '#{newVersion}' '#{newVersion}'"
+                sh "git checkout main"
+                sh "git merge --no-ff release/'#{newVersion}'"
+                sh "git tag -a '#{newVersion}'"
+                sh "git checkout develop"
+                sh "git merge --no-ff release/'#{newVersion}'"
+                sh "git branch -d release/'#{newVersion}'"
+
                 push_git_tags(tag: newVersion)
                 sh "git push origin main"
                 sh "git push origin develop"
