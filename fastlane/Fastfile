@@ -13,6 +13,11 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 
+ # CONSTANTS
+    releaseNotesDefault = "Bug fixes and other improvements"
+    releaseNotesBodyHeader = "What's new:"
+    releaseNotesFileBody = "../app/version/release-notes"
+
 default_platform(:android)
 
 platform :android do
@@ -23,21 +28,79 @@ platform :android do
             ensure_git_branch( branch: 'develop' )
 
             options_release_number = options[:release_number]
+            options_release_notes = options[:release_notes]
 
-            update_app_version(newVersion: options_release_number)
+            releaseNotes = determine_release_notes(releaseNotes: options_release_notes)
+
+            update_app_version(newVersion: options_release_number, newReleaseNotes: releaseNotes)
             do_create_and_push_tags(newVersion: options_release_number)
 
         end
 
+        private_lane :determine_release_notes do |options|
+            custom_release_notes = options[:release_notes]
+            existingReleaseNotes = File.read(releaseNotesFileBody)
+
+            # This handles the flow when no options were passed. We will prompt the user for input.
+            releaseNotes = if (custom_release_notes == nil) then
+                default_release_notes()
+            else
+                # Force notes_type to custom when custom_release_notes is present.
+                if custom_release_notes != nil
+                    retrieve_notes_for_type(
+                        notes_type: "CUSTOM",
+                        release_notes: custom_release_notes,
+                        existingReleaseNotes: existingReleaseNotes
+                    )
+                else
+                    retrieve_notes_for_type(
+                        notes_type: notes_type,
+                        release_notes: custom_release_notes,
+                        existingReleaseNotes: existingReleaseNotes
+                    )
+                end
+
+            end
+
+            validateReleaseNotes(releaseNotes: releaseNotes)
+            releaseNotes
+        end
+
+          desc "Generate default release notes"
+          private_lane :default_release_notes do
+
+            formatted = "#{releaseNotesBodyHeader}\n#{releaseNotesDefault}"
+
+            UI.message("\n#{formatted}")
+
+            formatted
+
+          end
+
+            desc "Validates the release notes to ensure they are suitable for the Play Store"
+            private_lane :validateReleaseNotes do |options|
+                releaseNotesLength = options[:releaseNotes].length
+                if (releaseNotesLength > releaseNotesMaxLength)
+                    UI.user_error!("Release notes are too long for Play Store (#{releaseNotesLength} characters). Max size allowed: #{releaseNotesMaxLength}")
+                end
+            end
+
+            desc "Updates app version and adds default release notes"
             private_lane :update_app_version do |options|
                 newVersion = options[:newVersion]
+                releaseNotes = options[:newReleaseNotes]
                 sh "git checkout -b release/#{newVersion} develop"
 
                 File.open('../version/version.properties', 'w') do |file|
                     file.write("VERSION=#{newVersion}")
                 end
+
+                File.open('../app/version/release-notes', 'w') do |file|
+                    file.write("""#{releaseNotes}""")
+                end
             end
 
+            desc "Creates and pushes tags for the supplied app version"
             private_lane :do_create_and_push_tags do |options|
                 newVersion = options[:newVersion]
                 git_commit(
