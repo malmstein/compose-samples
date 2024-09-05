@@ -32,6 +32,10 @@ platform :android do
             private_lane :update_app_version do |options|
                 newVersion = options[:newVersion]
                 sh "git checkout -b release/#{newVersion} develop"
+
+                File.open('../version/version.properties', 'w') do |file|
+                    file.write("VERSION=#{newVersion}")
+                end
             end
 
             private_lane :do_create_and_push_tags do |options|
