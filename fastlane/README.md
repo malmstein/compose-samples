@@ -15,29 +15,13 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 ## Android
 
-### android test
+### android tag_and_release_version
 
 ```sh
-[bundle exec] fastlane android test
+[bundle exec] fastlane android tag_and_release_version
 ```
 
-Runs all the tests
-
-### android beta
-
-```sh
-[bundle exec] fastlane android beta
-```
-
-Submit a new Beta Build to Crashlytics Beta
-
-### android deploy
-
-```sh
-[bundle exec] fastlane android deploy
-```
-
-Deploy a new version to the Google Play
+Tag and release a new app version
 
 ----
 

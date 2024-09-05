@@ -22,7 +22,7 @@ platform :android do
             ensure_git_status_clean
             ensure_git_branch( branch: 'develop' )
 
-            options_release_number = options[:app_version]
+            options_release_number = options[:newVersion]
 
             update_app_version(newVersion: options_release_number)
             do_create_and_push_tags(newVersion: options_release_number)
@@ -37,3 +37,22 @@ platform :android do
                     file.write("VERSION=#{newVersion}")
                 end
             end
+
+            private_lane :do_create_and_push_tags do |options|
+                newVersion = options[:newVersion]
+                git_commit(
+                    message: "Updated release notes and version number for new release - #{newVersion}",
+                    path: "*",
+                    allow_nothing_to_commit: true,
+                    skip_git_hooks: true
+                )
+
+                sh "git flow release finish -mnFS '#{newVersion}' '#{newVersion}'"
+                push_git_tags(tag: newVersion)
+                sh "git push origin main"
+                sh "git push origin develop"
+
+                UI.header("#{newVersion} tag has been successfully created. 🎉")
+            end
+
+end
