@@ -31,7 +31,7 @@ platform :android do
 
             private_lane :update_app_version do |options|
                 newVersion = options[:newVersion]
-                sh "git checkout -b release/#{newVersion} develop"
+                sh "git checkout -b release/'#{newVersion}' develop"
 
                 File.open('../app/version/version.properties', 'w') do |file|
                     file.write("VERSION=#{newVersion}")
@@ -48,11 +48,11 @@ platform :android do
                 )
 
                 sh "git checkout main"
-                sh "git merge --no-ff release/#{newVersion}"
-                sh "git tag -a #{newVersion}"
+                sh "git merge --no-ff release/'#{newVersion}'"
+                sh "git tag -a '#{newVersion}'"
                 sh "git checkout develop"
-                sh "git merge --no-ff release/#{newVersion}"
-                sh "git branch -d release/#{newVersion}"
+                sh "git merge --no-ff release/'#{newVersion}'"
+                sh "git branch -d release/'#{newVersion}'"
 
                 push_git_tags(tag: newVersion)
                 sh "git push origin main"
