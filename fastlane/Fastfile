@@ -16,7 +16,8 @@
  # CONSTANTS
     releaseNotesDefault = "Bug fixes and other improvements"
     releaseNotesBodyHeader = "What's new:"
-    releaseNotesFileBody = "../version/release-notes"
+    releaseNotesFilePath = "../version/release-notes"
+    appVersionFilePath = "../version/version-properties"
     releaseNotesLocales= ["en-US", "en-GB", "en-CA"]
     releaseNotesMaxLength = 500
 
@@ -41,7 +42,7 @@ platform :android do
 
         private_lane :determine_release_notes do |options|
             custom_release_notes = options[:release_notes]
-            existingReleaseNotes = File.read(releaseNotesFileBody)
+            existingReleaseNotes = File.read(releaseNotesFilePath)
 
             # This handles the flow when no options were passed. We will prompt the user for input.
             releaseNotes = if (custom_release_notes == nil) then
@@ -80,11 +81,11 @@ platform :android do
                 releaseNotes = options[:newReleaseNotes]
                 sh "git checkout -b release/#{newVersion} develop"
 
-                File.open('../version/version.properties', 'w') do |file|
+                File.open(appVersionFilePath, 'w') do |file|
                     file.write("VERSION=#{newVersion}")
                 end
 
-                File.open('../app/version/release-notes', 'w') do |file|
+                File.open(releaseNotesFilePath, 'w') do |file|
                     file.write("""#{releaseNotes}""")
                 end
 
