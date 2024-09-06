@@ -16,7 +16,7 @@
  # CONSTANTS
     releaseNotesDefault = "Bug fixes and other improvements"
     releaseNotesBodyHeader = "What's new:"
-    releaseNotesFileBody = "../app/version/release-notes"
+    releaseNotesFileBody = "../version/release-notes"
     releaseNotesLocales= ["en-US", "en-GB", "en-CA"]
     releaseNotesMaxLength = 500
 
