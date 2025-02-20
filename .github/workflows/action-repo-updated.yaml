@@ -1,50 +1,30 @@
-name: Tag Android Release
+name: Pull Request changed -> Sync Asana PR task
 
 on:
-  workflow_dispatch:
-    inputs:
-      app-version:
-        description: 'App Version for Release'
-        required: true
-        default: 'PLACEHOLDER'
-
-env:
-  ASANA_PAT: ${{ secrets.GH_ASANA_SECRET }}
+  pull_request_review:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - closed
+      - reopened
+      - synchronize
+      - assigned
+      - ready_for_review
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.ref }}
 
 jobs:
-  create-tag:
-    name: Create and Push git tag for version
-    runs-on: macos-latest
-
+  sync:
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: duckduckgo/native-github-asana-sync@feature/david/pr-sync
         with:
-          submodules: recursive
-
-      - name: Set up ruby env
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.7.2
-          bundler-cache: true
-
-      - name: Use fastlane lane to create and push tagged release
-        id: create_git_tag
-        run: |
-          bundle exec fastlane android tag_and_release_version app_version=${{ github.event.inputs.app-version }}
-
-      - name: Create Asana task when workflow failed
-        if: ${{ failure() }}
-        id: create-failure-task
-        uses: duckduckgo/native-github-asana-sync@v1.1
-        with:
+          github_pat: ${{ secrets.GT_DAXMOBILE }}
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
-          asana-project: ${{ vars.GH_ANDROID_APP_PROJECT_ID }}
-          asana-section: ${{ vars.GH_ANDROID_APP_INCOMING_SECTION_ID }}
-          asana-task-name: GH Workflow Failure - Tag Android Release
-          asana-task-description: Tag Android Release has failed. See https://github.com/duckduckgo/Android/actions/runs/${{ github.run_id }}
-          action: 'create-asana-task'
+          workspace_id: ${{ secrets.GH_ASANA_WORKSPACE_ID }}
+          project_id: ${{ secrets.GH_ASANA_CODE_REVIEWS_PROJECT_ID }}
+          in_progress_section_id: ${{ secrets.GH_ASANA_CODE_REVIEWS_IN_PROGRESS_SECTION_ID }}
