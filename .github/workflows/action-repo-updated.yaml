@@ -25,6 +25,6 @@ jobs:
         with:
           github_pat: ${{ secrets.GT_DAXMOBILE }}
           asana-pat: ${{ secrets.GH_ASANA_SECRET }}
-          workspace_id: ${{ secrets.GH_ASANA_WORKSPACE_ID }}
-          project_id: ${{ secrets.GH_ASANA_CODE_REVIEWS_PROJECT_ID }}
-          in_progress_section_id: ${{ secrets.GH_ASANA_CODE_REVIEWS_IN_PROGRESS_SECTION_ID }}
+          workspace_id: ${{ vars.GH_ASANA_WORKSPACE_ID }}
+          project_id: ${{ vars.GH_ASANA_CODE_REVIEWS_PROJECT_ID }}
+          in_progress_section_id: ${{ vars.GH_ASANA_CODE_REVIEWS_IN_PROGRESS_SECTION_ID }}
